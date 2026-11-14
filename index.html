@@ -29,14 +29,70 @@
   </style>
 </head>
 <body>
-  <iframe 
-    src="https://script.google.com/macros/s/AKfycbwigqJwTaH1YWY6o5-tmoQ8kLU783DgW597b3TSJUiYIRTRGrNc6M-kBkhmcSigPS8hrg/exec?view=login" 
-    allow="clipboard-write; geolocation; microphone; camera">
-  </iframe>
+  <iframe id="appFrame" allow="clipboard-write; geolocation; microphone; camera"></iframe>
+
   <script>
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("./sw.js");
     }
+
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbwigqJwTaH1YWY6o5-tmoQ8kLU783DgW597b3TSJUiYIRTRGrNc6M-kBkhmcSigPS8hrg/exec";
+    const BATAS_30_MENIT = 30 * 60 * 1000;
+    const frame = document.getElementById("appFrame");
+
+    function muatAplikasi() {
+      const savedSid = localStorage.getItem("pwa_fktl_sid");
+      const savedUser = localStorage.getItem("pwa_fktl_user");
+      const lastActive = parseInt(localStorage.getItem("pwa_fktl_time") || "0", 10);
+      const sekarang = Date.now();
+
+      // Jika ada sesi tersimpan dan belum 30 menit sejak terakhir aplikasi dibuka/ditutup
+      if (savedSid && savedUser && (sekarang - lastActive < BATAS_30_MENIT)) {
+        localStorage.setItem("pwa_fktl_time", String(sekarang));
+        frame.src = GAS_URL + "?view=dashboard&sid=" + encodeURIComponent(savedSid) + "&u=" + encodeURIComponent(savedUser);
+      } else {
+        // Jika belum login atau sudah lewat 30 menit tidak dibuka
+        localStorage.removeItem("pwa_fktl_sid");
+        localStorage.removeItem("pwa_fktl_user");
+        localStorage.removeItem("pwa_fktl_time");
+        frame.src = GAS_URL + "?view=login";
+      }
+    }
+
+    // Terima pesan Simpan Sesi / Aktivitas / Logout dari dalam iframe Apps Script
+    window.addEventListener("message", function(e) {
+      if (!e.data || !e.data.fktlAction) return;
+
+      if (e.data.fktlAction === "SAVE_SESSION") {
+        localStorage.setItem("pwa_fktl_sid", e.data.sid);
+        localStorage.setItem("pwa_fktl_user", e.data.userB64);
+        localStorage.setItem("pwa_fktl_time", String(Date.now()));
+      } else if (e.data.fktlAction === "PING_ACTIVE") {
+        if (localStorage.getItem("pwa_fktl_sid")) {
+          localStorage.setItem("pwa_fktl_time", String(Date.now()));
+        }
+      } else if (e.data.fktlAction === "LOGOUT") {
+        localStorage.removeItem("pwa_fktl_sid");
+        localStorage.removeItem("pwa_fktl_user");
+        localStorage.removeItem("pwa_fktl_time");
+        frame.src = GAS_URL + "?view=login";
+      }
+    });
+
+    // Saat aplikasi di HP dibuka kembali dari background, cek apakah sudah 30 menit
+    document.addEventListener("visibilitychange", function() {
+      if (!document.hidden) {
+        const lastActive = parseInt(localStorage.getItem("pwa_fktl_time") || "0", 10);
+        if (lastActive > 0 && (Date.now() - lastActive >= BATAS_30_MENIT)) {
+          localStorage.removeItem("pwa_fktl_sid");
+          localStorage.removeItem("pwa_fktl_user");
+          localStorage.removeItem("pwa_fktl_time");
+          frame.src = GAS_URL + "?view=login";
+        }
+      }
+    });
+
+    muatAplikasi();
   </script>
 </body>
 </html>
