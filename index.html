@@ -128,9 +128,25 @@
     await OneSignal.init({
       appId: "36e47912-a24a-4e4c-bca5-eca058a8e84c",
       serviceWorkerParam: { scope: "/fktl-polibos/" },
-      serviceWorkerPath: "fktl-polibos/sw.js",
+      serviceWorkerPath: "/fktl-polibos/sw.js",
       notifyButton: {
         enable: true,
+      },
+      promptOptions: {
+        slidedown: {
+          prompts: [
+            {
+              type: "push",
+              autoPrompt: true,
+              text: {
+                actionMessage: "Aktifkan notifikasi agar mendapat info Papan Pengumuman FKTL POLIBOS!",
+                acceptButton: "Izinkan",
+                cancelButton: "Nanti"
+              },
+              delay: { pageViews: 1, timeDelay: 1 }
+            }
+          ]
+        }
       }
     });
   });
