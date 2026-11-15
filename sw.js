@@ -1,14 +1,9 @@
 importScripts("https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js");
-self.addEventListener('install', (event) => {
+
+const CACHE_NAME = "fktl-polibos-v1";
+self.addEventListener("install", (event) => {
   self.skipWaiting();
 });
-
-self.addEventListener('activate', (event) => {
+self.addEventListener("activate", (event) => {
   event.waitUntil(clients.claim());
-});
-
-self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    fetch(event.request).catch(() => caches.match(event.request))
-  );
 });
