@@ -1,5 +1,5 @@
 {
-  "name": "Forum Komunikasi Teknik Listrik Politeknik Bosowa",
+  "name": "FKTL Politeknik Bosowa",
   "short_name": "FKTL POLIBOS",
   "start_url": "./index.html",
   "display": "standalone",
@@ -8,14 +8,16 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "./FKTL_POLIBOS.png",
+      "src": "FKTL_POLIBOS.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "./FKTL_POLIBOS.png",
+      "src": "FKTL_POLIBOS.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
