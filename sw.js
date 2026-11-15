@@ -1,5 +1,3 @@
-importScripts("https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js");
-
 const CACHE_NAME = "fktl-polibos-v1";
 self.addEventListener("install", (event) => {
   self.skipWaiting();
