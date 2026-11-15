@@ -76,9 +76,7 @@
   <iframe id="appFrame" allow="clipboard-read; clipboard-write; geolocation; microphone; camera; fullscreen"></iframe>
 
   <script>
-    // TEMPELKAN URL /exec HASIL KLIK TOMBOL "SALIN" DARI APPS SCRIPT DI BARIS BAWAH INI:
     const GAS_URL = "https://script.google.com/macros/s/AKfycbwyzc5WOyyNej3XbmaXsUZmEIDNBO_kh3H6Xdf_x8LOqcYSVUxC4pRjpkUdO778gshljg/exec";
-
     const BATAS_30_MENIT = 30 * 60 * 1000;
     const frame = document.getElementById("appFrame");
     const loader = document.getElementById("loader");
@@ -136,9 +134,9 @@
             frame.src = GAS_URL + "?view=dashboard&sid=" + encodeURIComponent(e.data.sid) + "&u=" + encodeURIComponent(uRingan);
           }
         } else if (e.data.fktlAction === "NAVIGATE" && e.data.url) {
-          if (! e.data.url.includes("undefined")) {
-            frame.src = e.data.url;
-          }
+          // Kunci agar selalu menggunakan GAS_URL aktif, hanya mengambil parameter ?view=...
+          const qIdx = String(e.data.url).indexOf("?");
+          frame.src = qIdx !== -1 ? (GAS_URL + String(e.data.url).substring(qIdx)) : GAS_URL;
         } else if (e.data.fktlAction === "PING_ACTIVE") {
           if (localStorage.getItem("pwa_fktl_sid")) {
             localStorage.setItem("pwa_fktl_time", String(Date.now()));
