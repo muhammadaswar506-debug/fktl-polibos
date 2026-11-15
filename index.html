@@ -5,219 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>FKTL POLIBOS</title>
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#0f172a">
-  
-  <!-- Konfigurasi khusus agar tampil penuh (fullscreen) di iOS -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="FKTL POLIBOS">
-  
   <link rel="icon" type="image/png" href="FKTL_POLIBOS.png">
-  <link rel="apple-touch-icon" href="FKTL_POLIBOS.png">
   <style>
-    body, html { 
-      margin: 0; 
-      padding: 0; 
-      width: 100%; 
-      height: 100%; 
-      overflow: hidden; 
-      background-color: #0f172a; 
-      font-family: system-ui, -apple-system, sans-serif;
-    }
-    iframe { 
-      width: 100%; 
-      height: 100%; 
-      border: none; 
-      display: block; 
-    }
-    /* Banner Tombol Instal Melayang */
-    #installContainer {
-      display: none;
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 9998;
-      background-color: #1e293b;
-      border: 1px solid #334155;
-      padding: 8px 10px 8px 16px;
-      border-radius: 50px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-      align-items: center;
-      gap: 12px;
-      white-space: nowrap;
-    }
-    #installBtn {
-      background-color: #2563eb;
-      color: #ffffff;
-      border: none;
-      padding: 10px 18px;
-      border-radius: 50px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    #closeInstallBtn {
-      background: transparent;
-      color: #94a3b8;
-      border: none;
-      font-size: 18px;
-      padding: 4px 8px;
-      cursor: pointer;
-    }
-    .install-text {
-      color: #f8fafc;
-      font-size: 13px;
-      font-weight: 500;
-    }
-    /* Modal Panduan Khusus iOS */
-    #iosModal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.75);
-      z-index: 9999;
-      align-items: flex-end;
-      justify-content: center;
-      padding: 16px;
-    }
-    .ios-card {
-      background: #1e293b;
-      border: 1px solid #334155;
-      color: #f8fafc;
+    body, html {
+      margin: 0;
+      padding: 0;
       width: 100%;
-      max-width: 380px;
-      border-radius: 20px;
-      padding: 20px;
-      box-sizing: border-box;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-      margin-bottom: 12px;
+      height: 100%;
+      overflow: hidden;
+      background-color: #0b0f19;
     }
-    .ios-card h3 {
-      margin: 0 0 12px 0;
-      font-size: 17px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .ios-step {
-      font-size: 14px;
-      line-height: 1.5;
-      color: #cbd5e1;
-      margin-bottom: 12px;
-      background: #0f172a;
-      padding: 12px;
-      border-radius: 12px;
-    }
-    .close-modal-btn {
+    iframe {
       width: 100%;
-      background: #334155;
-      color: #ffffff;
+      height: 100vh;
       border: none;
-      padding: 12px;
-      border-radius: 12px;
-      font-weight: 600;
-      font-size: 14px;
-      cursor: pointer;
+      display: block;
     }
   </style>
 </head>
 <body>
-  <iframe src="https://script.google.com/macros/s/AKfycbwyzc5WOyyNej3XbmaXsUZmEIDNBO_kh3H6Xdf_x8LOqcYSVUxC4pRjpkUdO778gshljg/exec" allow="geolocation; microphone; camera; clipboard-read; clipboard-write"></iframe>
-
-  <!-- Banner & Tombol Instalasi -->
-  <div id="installContainer">
-    <span class="install-text">Pasang FKTL POLIBOS</span>
-    <button id="installBtn">📲 Instal</button>
-    <button id="closeInstallBtn" aria-label="Tutup">✕</button>
-  </div>
-
-  <!-- Pop-up Panduan Instalasi untuk Pengguna iPhone/iPad -->
-  <div id="iosModal">
-    <div class="ios-card">
-      <h3>Cara Instal di iPhone/iPad</h3>
-      <div class="ios-step">
-        1. Ketuk ikon <strong>Bagikan (Share)</strong> <span style="font-size:16px;">⍐</span> di bilah menu bawah/atas browser Safari Anda.
-      </div>
-      <div class="ios-step">
-        2. Gulir ke bawah lalu pilih <strong>"Tambah ke Layar Utama"</strong> (<em>Add to Home Screen</em>) ➕.
-      </div>
-      <div class="ios-step">
-        3. Ketuk <strong>"Tambah"</strong> (<em>Add</em>) di pojok kanan atas.
-      </div>
-      <button class="close-modal-btn" id="closeIosModal">Mengerti</button>
-    </div>
-  </div>
-
+  <iframe src="MASUKKAN_URL_EXEC_APPS_SCRIPT_ANDA_DISINI" allow="geolocation; microphone; camera; clipboard-read; clipboard-write"></iframe>
   <script>
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js');
-      });
+      navigator.serviceWorker.register('sw.js');
     }
-
-    let deferredPrompt;
-    const installContainer = document.getElementById('installContainer');
-    const installBtn = document.getElementById('installBtn');
-    const closeInstallBtn = document.getElementById('closeInstallBtn');
-    const iosModal = document.getElementById('iosModal');
-    const closeIosModal = document.getElementById('closeIosModal');
-
-    // Deteksi apakah pengguna memakai iOS (iPhone / iPad)
-    const isIos = () => {
-      const userAgent = window.navigator.userAgent.toLowerCase();
-      return /iphone|ipad|ipod/.test(userAgent) || 
-             (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-    };
-
-    // Deteksi apakah aplikasi sudah terinstal (berjalan dalam mode standalone)
-    const isInStandaloneMode = () => 
-      ('standalone' in window.navigator && window.navigator.standalone) || 
-      window.matchMedia('(display-mode: standalone)').matches;
-
-    // 1. Jika dibuka di iOS dan belum diinstal, langsung tampilkan tombol instal
-    if (isIos() && !isInStandaloneMode()) {
-      installContainer.style.display = 'flex';
-    }
-
-    // 2. Jika dibuka di Android/Desktop, tunggu event beforeinstallprompt
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      if (!isInStandaloneMode()) {
-        installContainer.style.display = 'flex';
-      }
-    });
-
-    // 3. Aksi saat tombol "Instal" diklik
-    installBtn.addEventListener('click', async () => {
-      if (deferredPrompt) {
-        // Untuk Android / Desktop: jalankan instalasi otomatis
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') {
-          installContainer.style.display = 'none';
-        }
-        deferredPrompt = null;
-      } else if (isIos()) {
-        // Untuk iOS: tampilkan pop-up panduan
-        iosModal.style.display = 'flex';
-      }
-    });
-
-    // Tombol tutup banner & modal
-    closeInstallBtn.addEventListener('click', () => {
-      installContainer.style.display = 'none';
-    });
-
-    closeIosModal.addEventListener('click', () => {
-      iosModal.style.display = 'none';
-    });
-
-    window.addEventListener('appinstalled', () => {
-      installContainer.style.display = 'none';
-      deferredPrompt = null;
-    });
   </script>
 </body>
 </html>
