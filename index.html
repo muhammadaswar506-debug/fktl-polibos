@@ -77,7 +77,7 @@
   <iframe id="appFrame" allow="clipboard-read; clipboard-write; geolocation; microphone; camera; fullscreen"></iframe>
 
   <script>
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbwigqJwTaH1YWY6o5-tmoQ8kLU783DgW597b3TSJUiYIRTRGrNc6M-kBkhmcSigPS8hrg/exec";
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbwyzc5WOyyNej3XbmaXsUZmEIDNBO_kh3H6Xdf_x8LOqcYSVUxC4pRjpkUdO778gshljg/exec";
     const BATAS_30_MENIT = 30 * 60 * 1000;
     const frame = document.getElementById("appFrame");
     const loader = document.getElementById("loader");
@@ -87,8 +87,7 @@
     }
 
     frame.addEventListener("load", sembunyikanLoader);
-    // Pengaman: otomatis buka layar setelah 5 detik jika event onload tertahan di browser HP
-    setTimeout(sembunyikanLoader, 5000);
+    setTimeout(sembunyikanLoader, 4000);
 
     function buatUserRinganB64(userB64Penuh) {
       try {
@@ -133,11 +132,10 @@
           localStorage.setItem("pwa_fktl_time", String(Date.now()));
           if (e.data.goDashboard) {
             const uRingan = buatUserRinganB64(e.data.userB64);
-            const targetUrl = GAS_URL + "?view=dashboard&sid=" + encodeURIComponent(e.data.sid) + "&u=" + encodeURIComponent(uRingan);
-            if (frame.src !== targetUrl) {
-              frame.src = targetUrl;
-            }
+            frame.src = GAS_URL + "?view=dashboard&sid=" + encodeURIComponent(e.data.sid) + "&u=" + encodeURIComponent(uRingan);
           }
+        } else if (e.data.fktlAction === "NAVIGATE" && e.data.url) {
+          frame.src = e.data.url;
         } else if (e.data.fktlAction === "PING_ACTIVE") {
           if (localStorage.getItem("pwa_fktl_sid")) {
             localStorage.setItem("pwa_fktl_time", String(Date.now()));
@@ -153,16 +151,12 @@
 
     muatAplikasi();
 
-    // WAJIB: Registrasi Service Worker agar bisa di-install (PWA) di HP
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", function() {
-        navigator.serviceWorker.register("./sw.js").catch(function(err) {
-          console.log("SW gagal:", err);
-        });
+        navigator.serviceWorker.register("./sw.js").catch(function(err) {});
       });
     }
 
-    // Penanganan Tombol Download / Install Aplikasi PWA
     let deferredPrompt = null;
     const banner = document.getElementById("installBanner");
     const btnInstall = document.getElementById("btnInstallPwa");
