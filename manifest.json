@@ -1,37 +1,21 @@
 {
-  "name": "FKTL POLIBOS - Sistem Informasi Organisasi",
+  "name": "Forum Komunikasi Teknik Listrik Politeknik Bosowa",
   "short_name": "FKTL POLIBOS",
-  "description": "Sistem Informasi Terpadu Forum Komunikasi Teknik Listrik Politeknik Bosowa",
   "start_url": "./index.html",
-  "scope": "./",
   "display": "standalone",
-  "background_color": "#0b1120",
-  "theme_color": "#8B0000",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
   "orientation": "portrait-primary",
   "icons": [
     {
       "src": "./FKTL_POLIBOS.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "./FKTL_POLIBOS.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable"
+      "type": "image/png"
     },
     {
       "src": "./FKTL_POLIBOS.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "./FKTL_POLIBOS.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
+      "type": "image/png"
     }
   ]
 }
