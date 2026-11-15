@@ -125,29 +125,67 @@
 <script>
   window.OneSignalDeferred = window.OneSignalDeferred || [];
   OneSignalDeferred.push(async function(OneSignal) {
-    await OneSignal.init({
-      appId: "36e47912-a24a-4e4c-bca5-eca058a8e84c",
-      serviceWorkerParam: { scope: "/fktl-polibos/" },
-      serviceWorkerPath: "/fktl-polibos/sw.js",
-      notifyButton: {
-        enable: true,
-      }
-    });
-
-    // Munculkan pop-up izin otomatis jika pengguna belum mengizinkan notifikasi
-    const isPushSupported = OneSignal.Notifications.isPushSupported();
-    if (isPushSupported && !OneSignal.Notifications.permission) {
-      OneSignal.Slidedown.promptPush();
+    try {
+      await OneSignal.init({
+        appId: "36e47912-a24a-4e4c-bca5-eca058a8e84c",
+        serviceWorkerParam: { scope: "/fktl-polibos/" },
+        serviceWorkerPath: "fktl-polibos/sw.js"
+      });
+      updateTombolNotif();
+    } catch (err) {
+      console.error("OneSignal Init Error:", err);
     }
   });
 
-  // Fungsi untuk tombol manual
-  function mintaIzinNotif() {
+  function updateTombolNotif() {
+    const btn = document.getElementById("btnNotifFktl");
+    if (!btn) return;
+    if (Notification.permission === "granted") {
+      btn.innerHTML = "✅ Notifikasi Aktif";
+      btn.style.background = "#1b5e20";
+      setTimeout(() => { btn.style.display = "none"; }, 4000);
+    } else if (Notification.permission === "denied") {
+      btn.innerHTML = "⚠️ Izin Diblokir Browser";
+      btn.style.background = "#b71c1c";
+    }
+  }
+
+  async function mintaIzinNotif() {
+    const btn = document.getElementById("btnNotifFktl");
+    if (!("Notification" in window)) {
+      alert("Browser Anda tidak mendukung notifikasi web.");
+      return;
+    }
+
+    if (Notification.permission === "denied") {
+      alert("Izin notifikasi terblokir di browser Anda. Klik ikon pengaturan di sebelah kiri alamat URL di atas, lalu ubah Notifikasi menjadi 'Izinkan' (Allow).");
+      return;
+    }
+
+    btn.innerHTML = "⏳ Menghubungkan...";
+
+    // 1. Panggil izin langsung dari API Browser (paling stabil saat diklik)
+    const permission = await Notification.requestPermission();
+    
+    // 2. Sinkronkan ke OneSignal agar terdaftar sebagai Subscriber
     window.OneSignalDeferred.push(async function(OneSignal) {
-      await OneSignal.Notifications.requestPermission();
+      try {
+        await OneSignal.Notifications.requestPermission();
+        await OneSignal.User.PushSubscription.optIn();
+      } catch (e) {
+        console.error(e);
+      }
+      updateTombolNotif();
     });
+
+    updateTombolNotif();
   }
 </script>
+
+<!-- Tombol Mengambang -->
+<button id="btnNotifFktl" onclick="mintaIzinNotif()" style="position: fixed; bottom: 16px; right: 16px; z-index: 2147483647; background: #990000; color: white; border: 2px solid white; border-radius: 50px; padding: 10px 18px; font-family: Arial, sans-serif; font-weight: bold; font-size: 13px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.4);">
+  🔔 Aktifkan Notifikasi
+</button>
 
 <!-- Tombol mengambang di atas iframe -->
 <button onclick="mintaIzinNotif()" style="position: fixed; bottom: 16px; right: 16px; z-index: 999999; background: #990000; color: white; border: 2px solid white; border-radius: 50px; padding: 10px 16px; font-family: Arial, sans-serif; font-weight: bold; font-size: 13px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.4);">
