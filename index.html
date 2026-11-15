@@ -9,8 +9,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="manifest" href="manifest.json">
-  <link rel="icon" type="image/png" href="icon-192.png">
-  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="icon" type="image/png" href="FKTL_POLIBOS.png">
+  <link rel="apple-touch-icon" href="FKTL_POLIBOS.png">
   <style>
     *, *::before, *::after { box-sizing: border-box; }
     html, body {
@@ -38,13 +38,29 @@
     const BATAS_IDLE_MS = 30 * 60 * 1000; // 30 Menit
     const frame = document.getElementById("appFrame");
 
+    // Memastikan string Base64 user di URL tidak pernah membawa foto HD yang menyebabkan Error 400
+    function ringkaskanUserB64(b64) {
+      if (!b64) return "";
+      try {
+        const obj = JSON.parse(decodeURIComponent(escape(atob(b64))));
+        if (obj.foto && String(obj.foto).length > 300) {
+          obj.foto = "";
+        }
+        return btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
+      } catch (e) {
+        return "";
+      }
+    }
+
     function muatAplikasi() {
       const sid = localStorage.getItem("fktl_pwa_sid");
-      const userB64 = localStorage.getItem("fktl_pwa_user");
+      const rawUserB64 = localStorage.getItem("fktl_pwa_user");
+      const userB64 = ringkaskanUserB64(rawUserB64);
       const lastActive = parseInt(localStorage.getItem("fktl_pwa_active") || "0", 10);
       const sekarang = Date.now();
 
       if (sid && userB64 && (sekarang - lastActive <= BATAS_IDLE_MS)) {
+        localStorage.setItem("fktl_pwa_user", userB64);
         localStorage.setItem("fktl_pwa_active", String(sekarang));
         frame.src = GAS_URL + "?view=dashboard&sid=" + encodeURIComponent(sid) + "&u=" + encodeURIComponent(userB64);
       } else {
@@ -60,11 +76,12 @@
       if (!data || !data.fktlAction) return;
 
       if (data.fktlAction === "SAVE_SESSION") {
+        const cleanB64 = ringkaskanUserB64(data.userB64 || "");
         localStorage.setItem("fktl_pwa_sid", data.sid || "");
-        localStorage.setItem("fktl_pwa_user", data.userB64 || "");
+        localStorage.setItem("fktl_pwa_user", cleanB64);
         localStorage.setItem("fktl_pwa_active", String(Date.now()));
-        if (data.goDashboard) {
-          frame.src = GAS_URL + "?view=dashboard&sid=" + encodeURIComponent(data.sid) + "&u=" + encodeURIComponent(data.userB64);
+        if (data.goDashboard && data.sid && cleanB64) {
+          frame.src = GAS_URL + "?view=dashboard&sid=" + encodeURIComponent(data.sid) + "&u=" + encodeURIComponent(cleanB64);
         }
       } else if (data.fktlAction === "PING_ACTIVE") {
         localStorage.setItem("fktl_pwa_active", String(Date.now()));
