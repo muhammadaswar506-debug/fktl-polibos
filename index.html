@@ -63,8 +63,15 @@
         localStorage.setItem("fktl_pwa_sid", data.sid || "");
         localStorage.setItem("fktl_pwa_user", data.userB64 || "");
         localStorage.setItem("fktl_pwa_active", String(Date.now()));
+        if (data.goDashboard) {
+          frame.src = GAS_URL + "?view=dashboard&sid=" + encodeURIComponent(data.sid) + "&u=" + encodeURIComponent(data.userB64);
+        }
       } else if (data.fktlAction === "PING_ACTIVE") {
         localStorage.setItem("fktl_pwa_active", String(Date.now()));
+      } else if (data.fktlAction === "GO_REGISTER") {
+        frame.src = GAS_URL + "?view=register";
+      } else if (data.fktlAction === "GO_LOGIN") {
+        frame.src = GAS_URL + "?view=login";
       } else if (data.fktlAction === "LOGOUT") {
         localStorage.removeItem("fktl_pwa_sid");
         localStorage.removeItem("fktl_pwa_user");
