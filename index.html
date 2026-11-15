@@ -121,6 +121,20 @@
       cursor: pointer;
     }
   </style>
+  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "36e47912-a24a-4e4c-bca5-eca058a8e84c",
+      serviceWorkerParam: { scope: "/fktl-polibos/" },
+      serviceWorkerPath: "fktl-polibos/sw.js",
+      notifyButton: {
+        enable: true,
+      }
+    });
+  });
+</script>
 </head>
 <body>
   <iframe src="https://script.google.com/macros/s/AKfycbwyzc5WOyyNej3XbmaXsUZmEIDNBO_kh3H6Xdf_x8LOqcYSVUxC4pRjpkUdO778gshljg/exec" allow="geolocation; microphone; camera; clipboard-read; clipboard-write"></iframe>
