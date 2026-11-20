@@ -1,4 +1,4 @@
-const CACHE_NAME = "fktl-polibos-v1";
+const CACHE_NAME = "fktl-polibos-v2";
 
 self.addEventListener("install", (event) => {
   self.skipWaiting();
