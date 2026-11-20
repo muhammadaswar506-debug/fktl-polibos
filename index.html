@@ -3,14 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  
-  <!-- Diubah dari #800000 (merah) menjadi #0b0f19 agar menyatu dengan background -->
   <meta name="theme-color" content="#0b0f19">
-  
-  <!-- Pengaturan layar penuh untuk iOS -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  
   <title>FKTL POLIBOS</title>
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" href="FKTL_POLIBOS.png">
@@ -49,6 +44,38 @@
       cursor: pointer;
       box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
     }
+    #updateBanner {
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 999999;
+      background-color: #1e293b;
+      color: #ffffff;
+      border: 1px solid #38bdf8;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-family: Arial, sans-serif;
+      font-size: 13px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+      align-items: center;
+      gap: 12px;
+      width: 85%;
+      max-width: 340px;
+      justify-content: space-between;
+    }
+    #updateBtn {
+      background-color: #0d6efd;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      white-space: nowrap;
+    }
   </style>
 </head>
 <body>
@@ -56,12 +83,50 @@
 
   <button id="installBtn">📲 Instal Aplikasi</button>
 
+  <div id="updateBanner">
+    <span>Versi baru aplikasi tersedia!</span>
+    <button id="updateBtn">Perbarui</button>
+  </div>
+
   <script>
+    let newWorker;
+    const updateBanner = document.getElementById('updateBanner');
+    const updateBtn = document.getElementById('updateBtn');
+
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js');
+        navigator.serviceWorker.register('sw.js').then((reg) => {
+          if (reg.waiting) {
+            newWorker = reg.waiting;
+            updateBanner.style.display = 'flex';
+          }
+
+          reg.addEventListener('updatefound', () => {
+            newWorker = reg.installing;
+            newWorker.addEventListener('statechange', () => {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                updateBanner.style.display = 'flex';
+              }
+            });
+          });
+        });
+      });
+
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!refreshing) {
+          refreshing = true;
+          window.location.reload();
+        }
       });
     }
+
+    updateBtn.addEventListener('click', () => {
+      if (newWorker) {
+        newWorker.postMessage({ type: 'SKIP_WAITING' });
+      }
+      updateBanner.style.display = 'none';
+    });
 
     let deferredPrompt;
     const installBtn = document.getElementById('installBtn');
